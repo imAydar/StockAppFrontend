@@ -9,7 +9,6 @@
        <col span="1" style="width: 10%;">
        <col span="1" style="width: 10%;">
     </colgroup>
-
      <!-- <th v-for="(test, name1) in rows[0]" v-bind:key="name1">{{name1}}</th>-->
         <!--<th>Товар</th>
         <th>Количество</th>
