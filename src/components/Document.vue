@@ -48,7 +48,7 @@ export default {
             this.docNumber = url.searchParams.get("Number");
             this.docDate = url.searchParams.get("Date");
             var params = url.searchParams.toString();
-            url = "http://192.168.200.110/StockApp/api/DocumentRow?" + params;
+            url = "http://192.168.200.110:888/api/DocumentRow?" + params;
             fetch(url).then(r => {
                 return r.json();
             }).then(data => {
@@ -61,9 +61,9 @@ export default {
         addRow(wareCode) {
             document.getElementById("result").style.color = 'green';
             var tds = document.querySelectorAll("td");
-            tds.forEach((userItem) => {
-                if ('"' + userItem.innerHTML.toString() + '"' == wareCode.toString()) {
-                    var parent = userItem.parentNode;
+            tds.forEach((item) => {
+                if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
+                    var parent = item.parentNode;
                     parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
                     document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
                 }
@@ -78,7 +78,7 @@ export default {
         sendBarcode(data, vm) {
             vm.load(true);
             console.log(document.querySelector('.lds-roller').style.display);
-            var url = 'http://192.168.200.110/StockApp/api/DocumentRow/';
+            var url = 'http://192.168.200.110:888/api/DocumentRow/';
             fetch(url, {
                 headers: {
                     'Content-Type': 'application/json',

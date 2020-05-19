@@ -5,7 +5,7 @@
  
     <thead>
       <tr>
-      <th v-for="(test, name1) in docList[0]" v-bind:key="name1">{{name1}}</th>
+      <!--<th v-for="(test, name1) in docList[0]" v-bind:key="name1">{{name1}}</th>-->
      <!-- <th>Reference</th>-->
        <!-- <th>userId</th>
         <th>id</th>
@@ -38,7 +38,7 @@ export default {
     methods: {
         getdocuments() {
           this.load(true);
-            var url = 'http://192.168.200.110/StockApp/api/document/';
+            var url = 'http://192.168.200.110:888/api/document/';
             this.msg = url;
             fetch(url).then(r => {
                 this.msg = "ok";
