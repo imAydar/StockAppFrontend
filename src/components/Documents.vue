@@ -89,6 +89,7 @@ table.greyGridTable td, table.greyGridTable th {
   border: 1px solid #FFFFFF;
   padding: 5px 2px;
   text-align: left;
+  word-wrap: break-word;
 
 }
 table.greyGridTable tbody td {

@@ -41,7 +41,9 @@ export default {
         this.barcodeHook();
     },
     methods: {
-        getRows() {
+         getRows() {
+            var firstTime = Date.now();
+            console.log(Date.now());
             this.load(true);
             var vm = this;
             var url = new URL(location.href);
@@ -56,6 +58,9 @@ export default {
                 console.log(data);
             }).finally(() => {
                 vm.load(false);
+                var secondTime = Date.now();
+                console.log(Date.now());
+                console.log(secondTime - firstTime);
             });
         },
         addRow(wareCode) {
