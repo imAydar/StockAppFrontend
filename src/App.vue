@@ -14,6 +14,8 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color:#41a37a;
+ 
 }
 
 #nav {
@@ -24,9 +26,13 @@
   font-weight: bold;
  /* color: #2c3e50;*/
   text-decoration: unset;
+ 
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+html{
+   background-color: #3a4254;
+}
+/*#nav a.router-link-exact-active */#nav a{
+  /*color: #42b983;*/
+   color:white;
 }
 </style>

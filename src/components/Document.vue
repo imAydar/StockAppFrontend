@@ -2,9 +2,10 @@
     <div>
     <h3 >{{docNumber}} {{docDate}}</h3>
     <div class="lds-roller" id="loader" style="display:none"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div id="result"><div id="currentBarcode">{{currentBarcode}}</div><div id="currentWareName">{{currentWareName}}</div></div>
-        <table class="greyGridTable" style="width: 100%">
-            <colgroup>
+    <div id="result"><div id="currentBarcode"></div><div id="currentWareName"></div></div>
+        <div class="table-responsive">
+    <table class="table table-striped table-sm">
+    <colgroup>
        <col span="1" style="width: 80%;">
        <col span="1" style="width: 10%;">
        <col span="1" style="width: 10%;">
@@ -23,7 +24,10 @@
     <!--<td v-for="(sh, name, ind) in rows[0]" v-bind:key="ind">{{item[name]}}</td>-->
         </tr>
   </table>
+  <!--<div id="result">ffffhffhgfffff</div>-->
+  </div>
     </div>
+    
 </template>
 <script>
 export default {
@@ -33,7 +37,8 @@ export default {
             docNumber: null,
             docDate: null,
             currentBarcode: null,
-            currentWareName: null
+            currentWareName: null,
+            backendUrl: 'http://192.168.200.110:888/api/DocumentRow'
         };
     },
     mounted() {
@@ -41,36 +46,33 @@ export default {
         this.barcodeHook();
     },
     methods: {
-         getRows() {
-            var firstTime = Date.now();
-            console.log(Date.now());
+         getRows() {//get all rows in document
             this.load(true);
-            var vm = this;
-            var url = new URL(location.href);
+            let vm = this;
+            let url = new URL(location.href);
             this.docNumber = url.searchParams.get("Number");
             this.docDate = url.searchParams.get("Date");
-            var params = url.searchParams.toString();
-            url = "http://192.168.200.110:888/api/DocumentRow?" + params;
+            let params = url.searchParams.toString();
+            url = vm.backendUrl + "?" + params;
             fetch(url).then(r => {
                 return r.json();
             }).then(data => {
                 this.rows = data;
-                console.log(data);
             }).finally(() => {
                 vm.load(false);
-                var secondTime = Date.now();
-                console.log(Date.now());
-                console.log(secondTime - firstTime);
             });
         },
         addRow(wareCode) {
-            document.getElementById("result").style.color = 'green';
-            var tds = document.querySelectorAll("td");
+            document.getElementById("result").style.color = 'white';
+            document.getElementById("result").style.background = '#41a37a';
+            let tds = document.querySelectorAll("td");
             tds.forEach((item) => {
                 if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
-                    var parent = item.parentNode;
+                    let parent = item.parentNode;
                     parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
+                    //document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
                     document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
+                    //document.getElementById('result').style.background = "white";
                 }
             });
         },
@@ -82,8 +84,7 @@ export default {
         },
         sendBarcode(data, vm) {
             vm.load(true);
-            console.log(document.querySelector('.lds-roller').style.display);
-            var url = 'http://192.168.200.110:888/api/DocumentRow/';
+            let url = vm.backendUrl;
             fetch(url, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,10 +95,10 @@ export default {
             }).then(response => {
                 return response.text();
             }).then(data => { //sending query to server
-                console.log(data);
-                if (data == '"Ошибка: не найдена номенклатура"') {
-                    document.getElementById('currentWareName').innerHTML = data;
-                    document.getElementById("result").style.color = 'red';
+                if (data == '"Ошибка: не найдена номенклатура"') {//haven't found in db
+                    document.getElementById("result").style.background = '#a90b0b';
+                    document.getElementById("result").style.color = 'white';
+                    document.getElementById('currentWareName').innerHTML = "Ошибка: не найдена номенклатура";
                 } else {
                     vm.addRow(data);
                 }
@@ -106,16 +107,15 @@ export default {
             });
         },
         barcodeHook() {
-            var vm = this;
-            var input = '';
+            let vm = this;
+            let input = '';
             document.onkeyup = function(event) { //listening to every key up event in our input
                 document.getElementById("result").style.color = 'blue';
-                document.getElementById('currentWareName').innerHTML = '';
                 if (event.keyCode == 13) { //if there was a new line
-
-                    var barcode = input; //check for 13 symbols
-                    document.getElementById('currentBarcode').innerHTML = barcode;
-                    var data = {
+                    let barcode = input; //check for 13 symbols
+                    input = '';
+                    //document.getElementById('currentBarcode').innerHTML = barcode;
+                    let data = {
                         "barcode": barcode,
                         document: {
                             "Number": vm.docNumber,
@@ -123,7 +123,6 @@ export default {
                         }
                     }
                     vm.sendBarcode(data, vm);
-                    input = '';
                 } else {
                     input += event.key;
                 }
@@ -133,5 +132,7 @@ export default {
 }
 </script>
 <style>
-
+/*style for popup*/
+/*#result {position: fixed; bottom: 0; right: 0; z-index:500;}*/
+#result{ position: sticky;top: 0;background: #41a37a;} 
 </style>

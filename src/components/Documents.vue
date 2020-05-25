@@ -1,18 +1,22 @@
 <template>
   <div class="hello">
   <div class="lds-roller" id="loader" style="display:none"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-     <table class="greyGridTable">
- 
-    <thead>
-      <tr>
+  <div class="table-responsive">
+     <table class="table table-striped table-sm">
+   <!-- <colgroup>
+       <col span="1" style="width: 40%;">
+       <col span="1" style="width: 0%;">
+       <col span="1" style="width: 30%;">
+       <col span="1" style="width: 30%;">
+    </colgroup>-->
+  
       <!--<th v-for="(test, name1) in docList[0]" v-bind:key="name1">{{name1}}</th>-->
      <!-- <th>Reference</th>-->
        <!-- <th>userId</th>
         <th>id</th>
         <th>title</th>
         <th>body</th>-->
-      </tr>
-    </thead>
+      
     <tr v-for="(item, index) in docList" v-bind:key="index">
         <td v-for="(sh, name, ind) in docList[0]" v-bind:key="ind"><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>{{item[name]}}</a></td>
     <!--<td><a :href='"http://192.168.200.110/StockApp/api/DocumentRow?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
@@ -20,35 +24,35 @@
         </tr>
   </table>
   </div>
+  </div>
 </template>
 
 <script>
-//import axios from 'axios';
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 export default {
     name: 'Documents',
     data() {
         return {
             docList: {},
-            msg: null
+            docListView: {}
         };
     },
     mounted() {
       this.getdocuments();
     },
     methods: {
-        getdocuments() {
+        getdocuments() {//get list of last documents 
           this.load(true);
-            var url = 'http://192.168.200.110:888/api/document/';
-            this.msg = url;
+            let url = 'http://192.168.200.110:888/api/document/';
             fetch(url).then(r => {
-                this.msg = "ok";
                 return r.json();
             }).then(data => {
-
-                this.docList = data;
-                this.msg = "ok";
-                console.log(data);
-                this.load(false);
+                this.docList = data;//.filter(i => i['Number'].startsWith('ИФ'));
+                //this.docListView = data.
+            }).finally(() =>{
+              this.load(false);
             })
         },
         load(stop){//in case there'd be more code
@@ -78,6 +82,31 @@ li {
 a {
   color: #42b983;
 }
+tr{
+  color: #42b983;
+}
+.home{
+ 
+}
+.table-responsive{
+      background-color: #3a4254;
+}
+table{
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+table td{
+  /*border-bottom: 1px solid #dee2e6;*/
+  border-right: 1px solid #4e4f50;
+  text-align:left;
+  
+}
+.table-sm td{
+  padding:0;
+  font-size: 15.4px;
+}
+/*
 table.greyGridTable {
   border: 2px solid #FFFFFF;
   width: 100%;
@@ -90,7 +119,6 @@ table.greyGridTable td, table.greyGridTable th {
   padding: 5px 2px;
   text-align: left;
   word-wrap: break-word;
-
 }
 table.greyGridTable tbody td {
   font-size: 13px;
@@ -122,7 +150,7 @@ table.greyGridTable tfoot {
 }
 table.greyGridTable tfoot td {
   font-size: 14px;
-}
+}*/
 
 
 .lds-roller {
