@@ -1,242 +1,104 @@
 <template>
-  <div class="hello">
-  <div class="lds-roller" id="loader" style="display:none"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-  <div class="table-responsive">
-     <table class="table table-striped table-sm">
-   <!-- <colgroup>
-       <col span="1" style="width: 40%;">
-       <col span="1" style="width: 0%;">
-       <col span="1" style="width: 30%;">
-       <col span="1" style="width: 30%;">
-    </colgroup>-->
-  
-      <!--<th v-for="(test, name1) in docList[0]" v-bind:key="name1">{{name1}}</th>-->
-     <!-- <th>Reference</th>-->
-       <!-- <th>userId</th>
-        <th>id</th>
-        <th>title</th>
-        <th>body</th>-->
-      
-    <tr v-for="(item, index) in docList" v-bind:key="index">
-        <td v-for="(sh, name, ind) in docList[0]" v-bind:key="ind"><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>{{item[name]}}</a></td>
-    <!--<td><a :href='"http://192.168.200.110/StockApp/api/DocumentRow?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
-    <!--<td><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
-        </tr>
-  </table>
-  </div>
-  </div>
+   <div class="hello">
+      <Loader />
+      <div class="table-responsive">
+         <table class="table table-striped table-sm">
+            <!-- <colgroup>
+               <col span="1" style="width: 40%;">
+               <col span="1" style="width: 0%;">
+               <col span="1" style="width: 30%;">
+               <col span="1" style="width: 30%;">
+               </colgroup>-->
+            <!--<th v-for="(test, name1) in docList[0]" v-bind:key="name1">{{name1}}</th>-->
+            <!-- <th>Reference</th>-->
+            <!-- <th>userId</th>
+               <th>id</th>
+               <th>title</th>
+               <th>body</th>-->
+            <tr v-for="(item, index) in docList" v-bind:key="index">
+               <td v-for="(sh, name, ind) in docList[0]" v-bind:key="ind"><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>{{item[name]}}</a></td>
+               <!--<td><a :href='"http://192.168.200.110/StockApp/api/DocumentRow?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
+               <!--<td><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
+            </tr>
+         </table>
+      </div>
+   </div>
 </template>
-
 <script>
-
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-export default {
-    name: 'Documents',
-    data() {
-        return {
-            docList: {},
-            docListView: {}
-        };
-    },
-    mounted() {
-      this.getdocuments();
-    },
-    methods: {
-        getdocuments() {//get list of last documents 
-          this.load(true);
-            let url = 'http://192.168.200.110:888/api/document/';
-            fetch(url).then(r => {
-                return r.json();
-            }).then(data => {
-                this.docList = data;//.filter(i => i['Number'].startsWith('ИФ'));
-                //this.docListView = data.
-            }).finally(() =>{
-              this.load(false);
-            })
-        },
-        load(stop){//in case there'd be more code
-            if(stop)
-                document.getElementById('loader').style.display = "";
-            else
-                document.getElementById('loader').style.display = "none";
-        },
-
-    }
-}
+   import 'bootstrap/dist/css/bootstrap.css'
+   import 'bootstrap-vue/dist/bootstrap-vue.css'
+   import Loader from './Loader.vue'
+   export default {
+       name: 'Documents',
+       components: {
+         Loader
+       },
+       data() {
+           return {
+               docList: {},
+               docListView: {}
+           };
+       },
+       mounted() {
+         this.getdocuments();
+       },
+       methods: {
+           getdocuments() {//get list of last documents 
+             this.load(true);
+               let url = 'http://192.168.200.110:888/api/document/';
+               fetch(url).then(r => {
+                   return r.json();
+               }).then(data => {
+                   this.docList = data;//.filter(i => i['Number'].startsWith('ИФ'));
+                   //this.docListView = data.
+               }).finally(() =>{
+                 this.load(false);
+               })
+           },
+           load(stop){//in case there'd be more code
+               if(stop)
+                   document.getElementById('loader').style.display = "";
+               else
+                   document.getElementById('loader').style.display = "none";
+           },
+   
+       }
+   }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-tr{
-  color: #42b983;
-}
-.home{
- 
-}
-.table-responsive{
-      background-color: #3a4254;
-}
-table{
-    width: 100%;
-    table-layout: fixed;
-    word-wrap: break-word;
-}
-table td{
-  /*border-bottom: 1px solid #dee2e6;*/
-  border-right: 1px solid #4e4f50;
-  text-align:left;
-  
-}
-.table-sm td{
-  padding:0;
-  font-size: 15.4px;
-}
-/*
-table.greyGridTable {
-  border: 2px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-  table-layout:fixed;
-}
-table.greyGridTable td, table.greyGridTable th {
-  border: 1px solid #FFFFFF;
-  padding: 5px 2px;
-  text-align: left;
-  word-wrap: break-word;
-}
-table.greyGridTable tbody td {
-  font-size: 13px;
-   text-align: left;
-}
-table.greyGridTable tr:nth-child(even) {
-  background: #D0E4F5;
-}
-table.greyGridTable thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #333333;
-}
-table.greyGridTable thead th {
-  font-size: 15px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 2px solid #333333;
-}
-table.greyGridTable thead th:first-child {
-  border-left: none;
-}
-
-table.greyGridTable tfoot {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333333;
-  border-top: 4px solid #333333;
-}
-table.greyGridTable tfoot td {
-  font-size: 14px;
-}*/
-
-
-.lds-roller {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-roller div {
-  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  transform-origin: 40px 40px;
-}
-.lds-roller div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #58c0f5;
-  margin: -4px 0 0 -4px;
-}
-.lds-roller div:nth-child(1) {
-  animation-delay: -0.036s;
-}
-.lds-roller div:nth-child(1):after {
-  top: 63px;
-  left: 63px;
-}
-.lds-roller div:nth-child(2) {
-  animation-delay: -0.072s;
-}
-.lds-roller div:nth-child(2):after {
-  top: 68px;
-  left: 56px;
-}
-.lds-roller div:nth-child(3) {
-  animation-delay: -0.108s;
-}
-.lds-roller div:nth-child(3):after {
-  top: 71px;
-  left: 48px;
-}
-.lds-roller div:nth-child(4) {
-  animation-delay: -0.144s;
-}
-.lds-roller div:nth-child(4):after {
-  top: 72px;
-  left: 40px;
-}
-.lds-roller div:nth-child(5) {
-  animation-delay: -0.18s;
-}
-.lds-roller div:nth-child(5):after {
-  top: 71px;
-  left: 32px;
-}
-.lds-roller div:nth-child(6) {
-  animation-delay: -0.216s;
-}
-.lds-roller div:nth-child(6):after {
-  top: 68px;
-  left: 24px;
-}
-.lds-roller div:nth-child(7) {
-  animation-delay: -0.252s;
-}
-.lds-roller div:nth-child(7):after {
-  top: 63px;
-  left: 17px;
-}
-.lds-roller div:nth-child(8) {
-  animation-delay: -0.288s;
-}
-.lds-roller div:nth-child(8):after {
-  top: 56px;
-  left: 12px;
-}
-@keyframes lds-roller {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
+   h3 {
+   margin: 40px 0 0;
+   }
+   ul {
+   list-style-type: none;
+   padding: 0;
+   }
+   li {
+   display: inline-block;
+   margin: 0 10px;
+   }
+   a {
+   color: #42b983;
+   }
+   tr{
+   color: #42b983;
+   }
+   .table-responsive{
+   background-color: #3a4254;
+   }
+   table{
+   width: 100%;
+   table-layout: fixed;
+   word-wrap: break-word;
+   }
+   table td{
+   /*border-bottom: 1px solid #dee2e6;*/
+   border-right: 1px solid #4e4f50;
+   text-align:left;
+   }
+   .table-sm td{
+   padding:0;
+   font-size: 15.4px;
+   }
 </style>
