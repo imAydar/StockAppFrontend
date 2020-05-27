@@ -1,6 +1,19 @@
 <template>
     <div class="lds-roller" id="loader" style="display:none"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 </template>
+<script>
+/*export default {
+  created() {
+        this.$root.$refs.Loader = this;
+    },
+       methods: {
+            load(){
+                alert('hastolaoad');
+            } 
+       }
+}*/
+</script>
+
 <style>
 .lds-roller {
   display: inline-block;

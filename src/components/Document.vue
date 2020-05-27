@@ -63,13 +63,18 @@
                document.getElementById("result").style.color = 'white';
                document.getElementById("result").style.background = '#41a37a';
                let tds = document.querySelectorAll("td");
+               let hasFound = false;
                tds.forEach((item) => {
                    if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
+                       hasFound = true;
                        let parent = item.parentNode;
                        parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
                        document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
                    }
                });
+               if(!hasFound){
+                   document.getElementById('currentWareName').innerHTML = wareCode + " +1шт";
+               }
            },
            load(stop) { //in case there'd be more code
                if (stop)

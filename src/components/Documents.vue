@@ -1,6 +1,6 @@
 <template>
    <div class="hello">
-      <Loader />
+      <Loader ref = 'loader'/>
       <div class="table-responsive">
          <table class="table table-striped table-sm">
             <!-- <colgroup>
@@ -36,7 +36,7 @@
        data() {
            return {
                docList: {},
-               docListView: {}
+           //    docListView: {}
            };
        },
        mounted() {
@@ -49,8 +49,10 @@
                fetch(url).then(r => {
                    return r.json();
                }).then(data => {
-                   this.docList = data;//.filter(i => i['Number'].startsWith('ИФ'));
-                   //this.docListView = data.
+                  data.map(x => {  x.Comment = x.Comment.substr(0, 20)});  
+                  this.docList = data;
+                  
+                //  this.docListView = data.map(x => {  x.Comment = x.Comment.substr(0, 20)});       
                }).finally(() =>{
                  this.load(false);
                })
@@ -96,6 +98,7 @@
    /*border-bottom: 1px solid #dee2e6;*/
    border-right: 1px solid #4e4f50;
    text-align:left;
+       LINE-BREAK: anywhere;
    }
    .table-sm td{
    padding:0;
