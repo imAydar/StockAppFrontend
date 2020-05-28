@@ -1,6 +1,9 @@
 <template>
    <div>
-      <h3 >{{docNumber}} {{docDate}}</h3>
+      <h3 >
+         <div>{{docNumber}}</div>
+         <div>{{docDate}}</div>
+      </h3>
       <Loader />
       <div id="result">
          <div id="currentBarcode"></div>
@@ -59,49 +62,11 @@
                    vm.load(false);
                });
            },
-           addRow(wareCode) {
-               document.getElementById("result").style.color = 'white';
-               document.getElementById("result").style.background = '#41a37a';
-               let tds = document.querySelectorAll("td");
-               let hasFound = false;
-               tds.forEach((item) => {
-                   if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
-                       hasFound = true;
-                       let parent = item.parentNode;
-                       parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
-                       document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
-                   }
-               });
-               if(!hasFound){
-                   document.getElementById('currentWareName').innerHTML = wareCode + " +1шт";
-               }
-           },
            load(stop) { //in case there'd be more code
                if (stop)
                    document.getElementById('loader').style.display = "";
                else
                    document.getElementById('loader').style.display = "none";
-           },
-           sendBarcode(data, vm) {
-               vm.load(true);
-               let url = vm.backendUrl;
-               fetch(url, {
-                   headers: {'Content-Type': 'application/json'},
-                   method: 'Post',
-                   body: JSON.stringify(data)
-               }).then(response => {
-                   return response.text();
-               }).then(data => { //sending query to server
-                   if (data == '"Ошибка: не найдена номенклатура"') {//haven't found in db
-                       document.getElementById("result").style.background = '#a90b0b';
-                       document.getElementById("result").style.color = 'white';
-                       document.getElementById('currentWareName').innerHTML = "Ошибка: не найдена номенклатура";
-                   } else {
-                       vm.addRow(data);
-                   }
-               }).finally(() => {
-                   vm.load(false);
-               });
            },
            barcodeHook() {
                let vm = this;
@@ -124,7 +89,46 @@
                    }
                }
            }
-       }
+       },
+       sendBarcode(data, vm) {
+               vm.load(true);
+               let url = vm.backendUrl;
+               fetch(url, {
+                   headers: {'Content-Type': 'application/json'},
+                   method: 'Post',
+                   body: JSON.stringify(data)
+               }).then(response => {
+                   return response.text();
+               }).then(data => { //sending query to server
+                   if (data == '"Ошибка: не найдена номенклатура"') {//haven't found in db
+                       document.getElementById("result").style.background = '#a90b0b';
+                       document.getElementById("result").style.color = 'white';
+                       document.getElementById('currentWareName').innerHTML = "Ошибка: не найдена номенклатура";
+                   } else {
+                       vm.addRow(data);
+                   }
+               }).finally(() => {
+                   vm.load(false);
+               });
+           },
+           addRow(wareCode) {
+               document.getElementById("result").style.color = 'white';
+               document.getElementById("result").style.background = '#41a37a';
+               let tds = document.querySelectorAll("td");
+               let hasFound = false;
+               tds.forEach((item) => {
+                   if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
+                       hasFound = true;
+                       let parent = item.parentNode;
+                       parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
+                       document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
+                   }
+               });
+               if(!hasFound){
+                   document.getElementById('currentWareName').innerHTML = wareCode + " +1шт";
+               }
+           }
+           
    }
 </script>
 <style>

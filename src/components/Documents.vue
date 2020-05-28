@@ -16,7 +16,7 @@
                <th>title</th>
                <th>body</th>-->
             <tr v-for="(item, index) in docList" v-bind:key="index">
-               <td v-for="(sh, name, ind) in docList[0]" v-bind:key="ind"><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>{{item[name]}}</a></td>
+               <td v-for="(sh, name, ind) in docList[0]" v-bind:key="ind"><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>{{docListView[index][name]}}</a></td>
                <!--<td><a :href='"http://192.168.200.110/StockApp/api/DocumentRow?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
                <!--<td><a :href='"about?Number=" + item["Number"] + "&Date=" + item["Date"]'>Reference</a></td>-->
             </tr>
@@ -35,8 +35,9 @@
        },
        data() {
            return {
+              backendURl: 'http://192.168.200.110:888/api/document/',
                docList: {},
-           //    docListView: {}
+               docListView: {}
            };
        },
        mounted() {
@@ -45,12 +46,15 @@
        methods: {
            getdocuments() {//get list of last documents 
              this.load(true);
-               let url = 'http://192.168.200.110:888/api/document/';
-               fetch(url).then(r => {
+               fetch(this.backendURl).then(r => {
                    return r.json();
                }).then(data => {
-                  data.map(x => {  x.Comment = x.Comment.substr(0, 20)});  
-                  this.docList = data;
+                  this.docList = JSON.parse(JSON.stringify(data));
+                  data.map(x => {  
+                     x.Comment = x.Comment.substr(0, 20); 
+                     x.Date = x.Date.replace("T", " ");
+                     });  
+                  this.docListView = data;
                   
                 //  this.docListView = data.map(x => {  x.Comment = x.Comment.substr(0, 20)});       
                }).finally(() =>{
@@ -97,8 +101,8 @@
    table td{
    /*border-bottom: 1px solid #dee2e6;*/
    border-right: 1px solid #4e4f50;
-   text-align:left;
-       LINE-BREAK: anywhere;
+   /*text-align:left;
+       LINE-BREAK: unset;*/
    }
    .table-sm td{
    padding:0;
