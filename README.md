@@ -1,5 +1,6 @@
 #StockappFrontend
 This project is using vue. It exchanging data with c# written backend service which exchanging data with 1c(erp system) .
+![gif](/public/git assests/main.gif)
 ##Problem:
 We have DCT(data collection terminal) and it's supposed to make life easier, but using it as it is not quite easy.
 Usuall algorithm is:

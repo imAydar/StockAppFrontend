@@ -16,12 +16,14 @@
                <col span="1" style="width: 10%;">
                <col span="1" style="width: 10%;">
             </colgroup>
+            <tbody id="tbody">
             <tr v-for="(item, index) in rows" v-bind:key="index">
                <td>{{item.WareName}}</td>
                <td>{{item.Quantity}}</td>
                <td>{{item.HasToBeQuantity}}</td>
                <td style="display:none">{{item.Code}}</td>
             </tr>
+            </tbody>
          </table>
       </div>
    </div>
@@ -52,7 +54,7 @@
                let vm = this;
                let url = new URL(location.href);
                this.docNumber = url.searchParams.get("Number");
-               this.docDate = url.searchParams.get("Date");
+               this.docDate = url.searchParams.get("Date").replace('T', ' ');
                url = vm.backendUrl + "?" + url.searchParams.toString();
                fetch(url).then(r => {
                    return r.json();
@@ -88,8 +90,7 @@
                        input += event.key;
                    }
                }
-           }
-       },
+           },
        sendBarcode(data, vm) {
                vm.load(true);
                let url = vm.backendUrl;
@@ -100,24 +101,25 @@
                }).then(response => {
                    return response.text();
                }).then(data => { //sending query to server
-                   if (data == '"Ошибка: не найдена номенклатура"') {//haven't found in db
+                   if (data.startsWith('"Ошибка')) {//haven't found in db
                        document.getElementById("result").style.background = '#a90b0b';
                        document.getElementById("result").style.color = 'white';
                        document.getElementById('currentWareName').innerHTML = "Ошибка: не найдена номенклатура";
                    } else {
-                       vm.addRow(data);
+                       vm.addRow(data.replace(/"/g, '').split(';'));
                    }
                }).finally(() => {
                    vm.load(false);
                });
            },
-           addRow(wareCode) {
+           addRow(wareData) {//wareData[0] is code and wareData[1] is name
+               console.log(wareData[0]);
                document.getElementById("result").style.color = 'white';
                document.getElementById("result").style.background = '#41a37a';
                let tds = document.querySelectorAll("td");
                let hasFound = false;
                tds.forEach((item) => {
-                   if ('"' + item.innerHTML.toString() + '"' == wareCode.toString()) {
+                   if (item.innerHTML.toString() == wareData[0].toString()) {
                        hasFound = true;
                        let parent = item.parentNode;
                        parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
@@ -125,10 +127,13 @@
                    }
                });
                if(!hasFound){
-                   document.getElementById('currentWareName').innerHTML = wareCode + " +1шт";
+                   document.getElementById("result").style.background = "rgb(88, 76, 138)"
+                   document.getElementById('tbody').innerHTML += "<tr><td>" + wareData[1] + "</td><td>1</td><td>0</td><td style='display: none;'>" +  wareData[0] + "</td></tr>"
+                   document.getElementById('currentWareName').innerHTML = "Добавлена новая строка: " + wareData[1] + " +1шт";
                }
            }
            
+   }
    }
 </script>
 <style>
