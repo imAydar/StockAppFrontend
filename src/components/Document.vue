@@ -5,6 +5,7 @@
          <div>{{docDate}}</div>
       </h3>
       <Loader />
+      <button @click="sendTestBarcode()">tap</button>
       <div id="result">
          <div id="currentBarcode"></div>
          <div id="currentWareName"></div>
@@ -49,6 +50,16 @@
            this.barcodeHook();
        },
        methods: {
+           sendTestBarcode(){
+               let data = {
+                           "barcode": '4606224045719',
+                           document: {
+                               "Number": this.docNumber,
+                               "Date": this.docDate
+                           }
+                       }
+               this.sendBarcode(data, this);
+           },
             getRows() {//get all rows in document
                this.load(true);
                let vm = this;
@@ -75,6 +86,7 @@
                let input = '';
                document.onkeyup = function(event) { //listening to every key up event in our input
                    document.getElementById("result").style.color = 'blue';
+                   document.getElementById('currentWareName').innerHTML = "";
                    if (event.keyCode == 13) { //if there was a new line
                        let barcode = input; //check for 13 symbols
                        input = '';
@@ -91,7 +103,7 @@
                    }
                }
            },
-       sendBarcode(data, vm) {
+        sendBarcode(data, vm) {
                vm.load(true);
                let url = vm.backendUrl;
                fetch(url, {
@@ -102,7 +114,7 @@
                    return response.text();
                }).then(data => { //sending query to server
                    if (data.startsWith('"Ошибка')) {//haven't found in db
-                       document.getElementById("result").style.background = '#a90b0b';
+                       document.getElementById("result"). style.background = '#a90b0b';
                        document.getElementById("result").style.color = 'white';
                        document.getElementById('currentWareName').innerHTML = "Ошибка: не найдена номенклатура";
                    } else {
@@ -113,9 +125,9 @@
                });
            },
            addRow(wareData) {//wareData[0] is code and wareData[1] is name
-               console.log(wareData[0]);
-               document.getElementById("result").style.color = 'white';
-               document.getElementById("result").style.background = '#41a37a';
+               //console.log(wareData[0]);
+              // document.getElementById("result").style.color = 'white';
+              // document.getElementById("result").style.background = '#41a37a';
                let tds = document.querySelectorAll("td");
                let hasFound = false;
                tds.forEach((item) => {
@@ -123,13 +135,18 @@
                        hasFound = true;
                        let parent = item.parentNode;
                        parent.children[1].innerHTML = (Number)(parent.children[1].innerHTML) + 1;
-                       document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
+                       //document.getElementById('currentWareName').innerHTML = parent.children[0].innerHTML + " +1шт";
+                       parent.scrollIntoView();
+                       //parent.style.color = 'white';
+                       parent.children[1].style.color = 'white';
+                       setTimeout((parent) => parent.children[1].style.color = '#42b983', 2000, parent);
                    }
                });
                if(!hasFound){
                    document.getElementById("result").style.background = "rgb(88, 76, 138)"
                    document.getElementById('tbody').innerHTML += "<tr><td>" + wareData[1] + "</td><td>1</td><td>0</td><td style='display: none;'>" +  wareData[0] + "</td></tr>"
                    document.getElementById('currentWareName').innerHTML = "Добавлена новая строка: " + wareData[1] + " +1шт";
+                  // document.getElementById('tbody').scrollIntoView(false);
                }
            }
            
